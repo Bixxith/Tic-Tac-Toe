@@ -29,7 +29,7 @@ def gbEnd(gbInstance, turn):
 
 # main function for the game
 def playAgain():
-    gbAgain = input("Play again? Enter 'y' to continue or anything else to exit")
+    gbAgain = input("Play again? Enter 'y' to continue or anything else to exit: ")
     if gbAgain == 'y':
         game()
     else:
@@ -48,16 +48,30 @@ def game():
         gbPrint(gbInstance)
         print(f"\nIt is {turn}'s turn.")
 
-        # has the user input a number 1-9
-        move = int(input(f"Please select a number to place your {turn}: "))
-
-        # makes sure the move is valid and that the space isn't already taken
-        if gbInstance[move] != 'X' and gbInstance[move] != 'O':
-            gbInstance[move] = turn
-            count += 1
-        else:
-            print('\nInvalid placement or input.  Please select a number that is available on the board.\n')
-            continue
+        # sets a variable to make sure the turn gets processed
+        processTurn = True
+        while processTurn is True:
+            # sets a variable to make sure the attempt is valid (data validation)
+            attemptTurn = True
+            while attemptTurn is True:
+                # putting anything but an int into an int field causes fatal errors so instead of crashing it has the
+                # user repeatedly enter inputs until it gets the correct one
+                try:
+                    move = int(input(f"Please select a number to place your {turn}: "))
+                    if 1 <= move <= 9:
+                        attemptTurn = False
+                    else:
+                        print("Please enter a valid integer between 1-9")
+                except ValueError:
+                    print("Please enter a valid integer between 1-9")
+            # makes sure the placement is valid and not already taken
+            if gbInstance[move] != 'X' and gbInstance[move] != 'O':
+                gbInstance[move] = turn
+                count += 1
+                processTurn = False
+            else:
+                print('\nInvalid placement.  Please select a number that is available on the board.\n')
+                gbPrint(gbInstance)
 
         # checks for win conditions
         if count >= 5:
